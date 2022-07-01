@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icon_img_unavailable.jpeg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
