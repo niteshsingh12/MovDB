@@ -17,19 +17,19 @@ class HeaderView: UICollectionReusableView {
     
     lazy var headerLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textColor = .systemGray
         label.translatesAutoresizingMaskIntoConstraints = false
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
+    var padding: CGFloat = 10
+    
     // MARK: - Initialization
     
     ///Configures header view and activates constraints
     override init(frame: CGRect) {
         super.init(frame: frame)
-        configure()
     }
     
     required init?(coder: NSCoder) {
@@ -41,16 +41,16 @@ class HeaderView: UICollectionReusableView {
 
 extension HeaderView {
     
-    func configure() {
+    func configure(padding: CGFloat, font: UIFont) {
         
+        headerLabel.font = font
         addSubview(headerLabel)
-        let inset = CGFloat(2)
         
         NSLayoutConstraint.activate([
-            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -inset),
-            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
+            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding),
+            headerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: padding),
+            headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding)
         ])
     }
 }

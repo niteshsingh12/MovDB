@@ -15,6 +15,7 @@ enum ViewModelState {
 }
 
 enum MovieType: Int {
+    
     case nowPlaying
     case popular
     case topRated
@@ -92,4 +93,24 @@ final class HomeViewModel {
             .store(in: &cancellables)
     }
     
+    private func fetchMovieDetail(with endpoint: EndpointAssembler, type: MovieType) {
+        state.send(.loading)
+        
+        let completionHandler: (Subscribers.Completion<NetworkError>) -> Void = { (completion) in
+            switch completion {
+            case .failure(let error):
+                self.state.send(.finishedWithError(error: error))
+            case .finished:
+                self.state.send(completion: .finished)
+            }
+        }
+        
+        let valueHandler: (MovieListWrapper<Movie>) -> Void = { (moviesWrapper) in
+            self.movies.send((moviesWrapper.results, type))
+        }
+        
+        repository.fetchMovies(with: endpoint)
+            .sink(receiveCompletion: completionHandler, receiveValue: valueHandler)
+            .store(in: &cancellables)
+    }
 }

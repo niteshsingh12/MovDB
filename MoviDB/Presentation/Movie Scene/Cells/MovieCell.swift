@@ -7,9 +7,10 @@
 
 import Foundation
 import UIKit
-import Combine
 
 final class MovieCell: UICollectionViewCell {
+    
+    //MARK: Properties
     
     static let movie_cell_reuse_identifier = "movie-cell-reuse-identifier"
     
@@ -23,37 +24,23 @@ final class MovieCell: UICollectionViewCell {
     
     lazy var movieTitleLabel: VerticalAlignedLabel = {
         let label = VerticalAlignedLabel()
-        label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        label.font = .cellTitle
         label.textAlignment = .left
-        label.textColor = .label
+        label.textColor = .white
         return label
     }()
     
     lazy var genreLabel: VerticalAlignedLabel = {
         let label = VerticalAlignedLabel()
-        label.font = UIFont.systemFont(ofSize: 10, weight: .regular)
+        label.font = .cellSubtitle
         label.textAlignment = .left
-        label.textColor = .secondaryLabel
+        label.textColor = .white
         return label
     }()
     
-    var viewModel: MovieViewModel! {
-        didSet {
-            setupBindings()
-        }
-    }
+    var imageLoader: ImageLoaderProtocol?
     
-    var gradientLayer = CAGradientLayer()
-    
-    var imageURL = String()
-    
-    var imageLoader: ImageLoader? = DefaultImageLoader(manager: DefaultNetworkManager(URLSession(configuration: .default)))
-    private var cancellables = Set<AnyCancellable>()
-    
-    func injectDependencies(imageLoader: ImageLoader) {
-        self.imageLoader = imageLoader
-        //self.viewModel = viewModel
-    }
+    //MARK: Initializer
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -64,18 +51,24 @@ final class MovieCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: Dependency Injection
+    
+    func injectDependencies(imageLoader: ImageLoaderProtocol) {
+        self.imageLoader = imageLoader
+    }
+    
     // MARK: - Life Cycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = thumbImageView.frame
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        //imageLoader?.cancelLoad(imageURL)
         thumbImageView.image = nil
     }
+    
+    //MARK: Methods
     
     private func setup() {
         let subviews = [thumbImageView, movieTitleLabel, genreLabel]
@@ -103,50 +96,25 @@ final class MovieCell: UICollectionViewCell {
         ])
     }
     
-    private func setupBindings() {
-        viewModel.$moviePublisher
-            .sink(receiveCompletion: { (completion) in
-                
-            }, receiveValue: { (movie) in
-                
-                self.movieTitleLabel.text = movie?.title
-                
-                if let _ = movie?.genre_ids {
-                    self.genreLabel.text = movie?.getGenres()
-                }
-                
-                if let urlString = movie?.poster_path {
-                    DispatchQueue.global(qos: .utility).async {
-                        self.fetchImage(urlString: urlString)
-                    }
-                }
-            })
-            .store(in: &cancellables)
+    func configure(with movie: Movie) {
+        self.populateViewsWithData(movie: movie)
     }
     
-    private func fetchImage(urlString: String) {
+    private func populateViewsWithData(movie: Movie) {
         
-        imageURL = urlString
-        imageLoader?.loadImage(for: urlString)
-            .sink(receiveCompletion: { (completion) in
-                switch completion {
-                    case .failure: self.thumbImageView.image = UIImage(named: "icon_img_unavailable")
-                    case .finished: ()
-                }
-            }, receiveValue: { (image) in
-                DispatchQueue.main.async {
-                    self.thumbImageView.image = image
-                    self.movieTitleLabel.sizeToFit()
-                }
-            })
-            .store(in: &cancellables)
+        self.movieTitleLabel.text = movie.title
+        self.movieTitleLabel.sizeToFit()
+        if let _ = movie.genre_ids {
+            self.genreLabel.text = movie.getGenres()
+        }
+        Task.detached {
+            await self.downloadImage(for: movie)
+        }
     }
     
-    func addGradient() {
-        
-        gradientLayer.colors =  [UIColor.black.withAlphaComponent(0.4), UIColor.clear ].map{$0.cgColor}
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.3)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.3)
-        thumbImageView.layer.insertSublayer(gradientLayer, at: 0)
+    @MainActor private func downloadImage(for movie: Movie) async {
+        guard let imageURL = movie.imagePath else { return }
+        async let image = imageLoader?.image(from: imageURL)
+        thumbImageView.image = try? await image
     }
 }

@@ -8,8 +8,6 @@
 import Foundation
 import UIKit
 
-import Foundation
-
 protocol HomeBaseCoordinator: Coordinator {
     func moveToMovieDetailWith(movie: Movie)
     func moveBackToHomePage()
@@ -31,16 +29,18 @@ final class HomeCoordinator: HomeBaseCoordinator {
         let homeViewController = factory.createHomeViewController()
         homeViewController.coordinator = self
         rootViewController = UINavigationController(rootViewController: homeViewController)
+        hideNavigationBar()
         return rootViewController
     }
     
     func moveToMovieDetailWith(movie: Movie) {
-        
+        let detailViewController = factory.createDetailViewController(movie: movie)
+        detailViewController.coordinator = self
+        navigationRootViewController?.pushViewController(detailViewController, animated: true)
     }
     
     func moveBackToHomePage() {
         navigationRootViewController?.popViewController(animated: true)
-        navigationRootViewController?.navigationBar.isHidden = false
     }
     
     func didFinish(_ child: Coordinator) {
@@ -51,7 +51,7 @@ final class HomeCoordinator: HomeBaseCoordinator {
     
     private func configureNavigation() {
         let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
+        appearance.configureWithTransparentBackground()
         appearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.blue]
         appearance.shadowColor = .clear
 
@@ -59,7 +59,7 @@ final class HomeCoordinator: HomeBaseCoordinator {
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
         navigationBar.isTranslucent = false
-        navigationBar.isHidden = false
+        navigationBar.isHidden = true
     }
     
     private func hideNavigationBar() {

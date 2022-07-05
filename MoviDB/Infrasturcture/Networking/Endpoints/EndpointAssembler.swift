@@ -39,18 +39,22 @@ enum EndpointAssembler: RequestBuilder {
         case .fetchTopRatedMovies: return "/3/movie/top_rated"
         case .fetchUpcomingMovies: return "/3/movie/upcoming"
         case .fetchDetails(let movieId): return "/3/movie/\(movieId)"
-        case .fetchSimilarMovies(let movieId): return "/3/movie/\(movieId)"
+        case .fetchSimilarMovies(let movieId): return "/3/movie/\(movieId)/similar"
         }
     }
     
     var queryItems: [URLQueryItem] {
         
         let apiKey = "f641cb53cfaac25038f3bf4f43569695"
-        let queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
+        var queryItems = [URLQueryItem(name: "api_key", value: apiKey)]
         
         switch self {
-        default: return queryItems
+            case .fetchDetails:
+                queryItems.append(URLQueryItem(name: "append_to_response", value: "credits"))
+        default: ()
         }
+        
+        return queryItems
     }
     
     var requestType: RequestMethod {

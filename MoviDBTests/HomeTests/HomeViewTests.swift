@@ -30,7 +30,7 @@ class HomeViewTests: XCTestCase {
         
         viewModel = HomeViewModel(repository: movieRepo)
         
-        sut = HomeViewController(viewModel: viewModel)
+        sut = HomeViewController(viewModel: viewModel, imageLoader: ImageLoader())
     }
     
     func test_homeVCInitialization() {

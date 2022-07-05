@@ -13,7 +13,7 @@ class MoviesRepoTests: XCTestCase {
     // custom urlsession for mock network calls
     var urlSession: URLSession!
     var cancellabels: Set<AnyCancellable>!
-    var movieRepo: MovieRepository!
+    var movieRepo: (MovieDetailRepository & MovieRepository)!
 
     override func setUpWithError() throws {
         // Set url session for mock networking
@@ -55,6 +55,39 @@ class MoviesRepoTests: XCTestCase {
         
         movieRepo
             .fetchMovies(with: .fetchNowPlayingMovies)
+            .sink(receiveCompletion: completionHandler, receiveValue: valueHandler)
+            .store(in: &cancellabels)
+        
+        wait(for: [expectation], timeout: 1)
+    }
+    
+    func test_fetchMovieDetail() throws {
+        // Set mock data
+        guard let mockData = FakeStub.generateFakeDataFromJSONWith(fileName: "MovieDetailJSON") else {
+            XCTFail("Mock Generation Failed")
+            return
+        }
+        // Return data in mock request handler
+        MockURLProtocol.requestHandler = { request in
+            return (HTTPURLResponse(), mockData)
+        }
+        
+        let expectation = XCTestExpectation(description: "Expecting Movie Detil JSON")
+        let completionHandler: (Subscribers.Completion<NetworkError>) -> Void = { (completion) in
+            
+            switch completion {
+                case .failure: ()
+                case .finished: ()
+            }
+        }
+        
+        let valueHandler: (Movie) -> Void = { (movie) in
+            XCTAssertEqual(movie.original_title, "Uncharted", "Movie should be uncharted")
+            expectation.fulfill()
+        }
+        
+        movieRepo
+            .fetchMovieDetail(endpoint: .fetchDetails(movieId: ""))
             .sink(receiveCompletion: completionHandler, receiveValue: valueHandler)
             .store(in: &cancellabels)
         

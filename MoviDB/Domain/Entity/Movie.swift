@@ -30,6 +30,9 @@ struct Movie: Codable, Hashable {
     var tagline: String?
     var vote_average: Double
     var vote_count: Int
+    var production_companies: [ProductionCompany]?
+    var production_countries: [ProductionCountry]?
+    var credits: Credits?
     
     // MARK: - Protocol Confirmance
     
@@ -52,10 +55,46 @@ struct Movie: Codable, Hashable {
     }
 }
 
+extension Movie {
+    var imagePath: URL? {
+        guard let path = poster_path else { return nil }
+        return URL(string: AppConstants.imageBaseURL + path)
+    }
+    var backdrop_imagePath: URL? {
+        guard let path = backdrop_path else { return nil }
+        return URL(string: AppConstants.imageBaseURL + path)
+    }
+}
+
 struct Genre: Codable {
     
     //MARK: Properties
     
     var id: Int
     var name: String
+}
+
+struct ProductionCompany: Codable {
+    
+    //MARK: Properties
+    
+    var id: Int
+    var logo_path: String?
+    var name: String
+    var origin_country: String
+}
+
+struct ProductionCountry: Codable {
+    
+    //MARK: Properties
+    
+    var iso_3166_1: String
+    var name: String
+}
+
+struct Credits: Codable {
+    
+    //MARK: Properties
+    
+    var cast: [Cast]
 }

@@ -26,3 +26,14 @@ final class DefaultMovieRepository: MovieRepository {
         manager.fetch(with: endpoint).eraseToAnyPublisher()
     }
 }
+
+extension DefaultMovieRepository: MovieDetailRepository {
+    
+    func fetchSimilarMovies<T: Codable>(with endpoint: EndpointAssembler) -> AnyPublisher<MovieListWrapper<T>, NetworkError> {
+        manager.fetch(with: endpoint).eraseToAnyPublisher()
+    }
+    
+    func fetchMovieDetail(endpoint: EndpointAssembler) -> AnyPublisher<Movie, NetworkError> {
+        manager.fetch(with: endpoint).eraseToAnyPublisher() 
+    }
+}

@@ -26,7 +26,6 @@ final class DefaultNetworkManager: NetworkManager {
     func fetch<T: Codable>(with endpoint: EndpointAssembler) -> AnyPublisher<T, NetworkError> {
         
         let url = endpoint.buildComponent().url
-        
         guard let url = url else {
             return Fail(error: NetworkError.malformedURL).eraseToAnyPublisher()
         }
