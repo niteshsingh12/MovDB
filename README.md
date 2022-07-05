@@ -24,6 +24,6 @@ To run the app:
 * Open .xcodeproj file.
 * Run on simulator (iOS 15, > iPhone 12 preferably)
 
-Nitesh Singh
-Software Engineer - iOS
-Lyon, France
+* Nitesh Singh
+* Software Engineer - iOS
+* Lyon, France
