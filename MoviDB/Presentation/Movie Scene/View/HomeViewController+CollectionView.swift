@@ -69,7 +69,7 @@ extension HomeViewController {
             
             guard let section = MovieType(rawValue: section) else { fatalError("Unknown section") }
             switch section {
-                case .nowPlaying: return CollectionLayoutGenerator.generateLayoutForNowPlayingCell()
+                case .nowPlaying: return CollectionLayoutGenerator.generateLayoutForLargeCell()
                 default: return CollectionLayoutGenerator.generateLayoutForNormalMovieCell()
             }
         }

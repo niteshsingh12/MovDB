@@ -32,6 +32,6 @@ struct Cast: Codable, Hashable {
 extension Cast {
     var imagePath: URL? {
         guard let path = profile_path else { return nil }
-        return URL(string: AppConstants.imageBaseURL + path)
+        return URL(string: AppConstants.imageBaseURL500 + path)
     }
 }

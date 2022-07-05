@@ -10,6 +10,22 @@ import Combine
 
 final class MovieDetailViewModel {
     
+    //MARK: Section
+    
+    enum Section {
+        case cast
+        case similar
+        
+        func getTitle() -> String {
+            switch self {
+                case .cast:
+                    return "Cast & Crew"
+                case .similar:
+                    return "Similar Movies"
+            }
+        }
+    }
+    
     //MARK: Properties
     
     var movieDetail = PassthroughSubject<Movie, NetworkError>()

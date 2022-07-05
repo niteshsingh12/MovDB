@@ -49,8 +49,8 @@ class MovieTests: XCTestCase {
         }
         do {
             let movie = try JSONDecoder().decode(Movie.self, from: mockData)
-            XCTAssertEqual(movie.imagePath, URL(string: AppConstants.imageBaseURL + movie.poster_path!))
-            XCTAssertEqual(movie.backdrop_imagePath, URL(string: AppConstants.imageBaseURL + movie.backdrop_path!))
+            XCTAssertEqual(movie.imagePath, URL(string: AppConstants.imageBaseURL500 + movie.poster_path!))
+            XCTAssertEqual(movie.backdrop_imagePath, URL(string: AppConstants.imageBaseURL500 + movie.backdrop_path!))
             
         } catch {
             XCTFail("JSON Decoding Failed")

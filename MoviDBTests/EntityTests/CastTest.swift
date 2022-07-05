@@ -24,6 +24,6 @@ class CastTests: XCTestCase {
     }
     
     func test_CastImagePathGeneration() throws {
-        XCTAssertEqual(cast1.imagePath, URL(string: AppConstants.imageBaseURL + cast1.profile_path!))
+        XCTAssertEqual(cast1.imagePath, URL(string: AppConstants.imageBaseURL500 + cast1.profile_path!))
     }
 }

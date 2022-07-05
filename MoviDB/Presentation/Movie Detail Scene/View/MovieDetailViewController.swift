@@ -157,8 +157,8 @@ final class MovieDetailViewController: UIViewController, HomeBaseCoordinated {
     
     //MARK: Properties
     
-    typealias Datasource = UICollectionViewDiffableDataSource<MovieType, AnyHashable>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<MovieType, AnyHashable>
+    typealias Datasource = UICollectionViewDiffableDataSource<MovieDetailViewModel.Section, AnyHashable>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<MovieDetailViewModel.Section, AnyHashable>
     var datasource: Datasource!
     private var snapshot = Snapshot()
     
@@ -313,8 +313,8 @@ final class MovieDetailViewController: UIViewController, HomeBaseCoordinated {
             collectionView.trailingAnchor.constraint(equalTo: containerStackView.trailingAnchor),
             collectionView.leadingAnchor.constraint(equalTo: containerStackView.leadingAnchor),
             
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            backButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 10),
+            backButton.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             backButton.heightAnchor.constraint(equalToConstant: 40),
             backButton.widthAnchor.constraint(equalToConstant: 40),
             
@@ -341,25 +341,25 @@ final class MovieDetailViewController: UIViewController, HomeBaseCoordinated {
     func setGradientColour() {
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
-        gradientLayer.locations = [0.0, 0.5, 1.0]
+        gradientLayer.locations = [0.0, 0.4, 1.0]
         gradientLayer.frame = scrollView.bounds
         scrollView.layer.insertSublayer(gradientLayer, at: 0)
     }
     
     @MainActor private func downloadImage() async {
-        let absolutePath = AppConstants.imageBaseURL + movie.poster_path!
+        let absolutePath = AppConstants.imageBaseURL500 + movie.poster_path!
         async let image = imageLoader.image(from: URL(string: absolutePath)!)
         coverImageView.image = try? await image
     }
     
     @MainActor func updateSections(with movies: [Movie]) {
-        if let casts = movie.credits?.cast, !snapshot.sectionIdentifiers.contains(.popular) {
-            snapshot.appendSections([.popular])
-            snapshot.appendItems(casts, toSection: .popular)
+        if let casts = movie.credits?.cast, !snapshot.sectionIdentifiers.contains(.cast) {
+            snapshot.appendSections([.cast])
+            snapshot.appendItems(casts, toSection: .cast)
             datasource.apply(snapshot, animatingDifferences: true)
-        } else if movies.count > 0, !snapshot.sectionIdentifiers.contains(.nowPlaying) {
-            snapshot.appendSections([.nowPlaying])
-            snapshot.appendItems(movies, toSection: .nowPlaying)
+        } else if movies.count > 0, !snapshot.sectionIdentifiers.contains(.similar) {
+            snapshot.appendSections([.similar])
+            snapshot.appendItems(movies, toSection: .similar)
             datasource.apply(snapshot, animatingDifferences: true)
         }
     }

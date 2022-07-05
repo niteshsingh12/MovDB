@@ -58,11 +58,11 @@ struct Movie: Codable, Hashable {
 extension Movie {
     var imagePath: URL? {
         guard let path = poster_path else { return nil }
-        return URL(string: AppConstants.imageBaseURL + path)
+        return URL(string: AppConstants.imageBaseURL500 + path)
     }
     var backdrop_imagePath: URL? {
         guard let path = backdrop_path else { return nil }
-        return URL(string: AppConstants.imageBaseURL + path)
+        return URL(string: AppConstants.imageBaseURL780 + path)
     }
 }
 

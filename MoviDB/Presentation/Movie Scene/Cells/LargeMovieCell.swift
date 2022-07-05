@@ -17,6 +17,7 @@ final class LargeMovieCell: UICollectionViewCell {
     lazy var thumbImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 8.0
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
     }()

@@ -14,11 +14,11 @@ extension UIFont {
     }()
     
     static var cellTitle: UIFont = {
-        return UIFont.systemFont(ofSize: 12, weight: .semibold)
+        return UIFont.systemFont(ofSize: 13, weight: .semibold)
     }()
     
     static var cellSubtitle: UIFont = {
-        return UIFont.systemFont(ofSize: 9, weight: .light)
+        return UIFont.systemFont(ofSize: 10, weight: .light)
     }()
     
     static var detailContent: UIFont = {
