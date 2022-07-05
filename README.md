@@ -23,7 +23,3 @@ To run the app:
 * Download this repo.
 * Open .xcodeproj file.
 * Run on simulator (iOS 15, > iPhone 12 preferably)
-
-* Nitesh Singh
-* Software Engineer - iOS
-* Lyon, France
