@@ -1,4 +1,4 @@
-# MovDB
+# MovDB - Movie app displaying latest movies and details from TMDB
 
 Use Case:
 
